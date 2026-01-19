@@ -22,7 +22,7 @@ This page tracks technical debt identified during the codebase audit. Issues are
 ### 1. Pilot survival chance unclamped
 
 **Location:** `game_state.gd:1938-1948`
-**GitHub Issue:** [#TBD](https://github.com/blamechris/exodus-loop/issues)
+**GitHub Issue:** [#125](https://github.com/blamechris/exodus-loop/issues/125)
 
 **Problem:** `survival_chance` can exceed 1.0, causing 100% survival rate.
 
@@ -46,7 +46,7 @@ var survival_chance = clampf(
 ### 2. Minimum map size unvalidated
 
 **Location:** `battle_map_generator.gd:150-196`
-**GitHub Issue:** [#TBD](https://github.com/blamechris/exodus-loop/issues)
+**GitHub Issue:** [#126](https://github.com/blamechris/exodus-loop/issues/126)
 
 **Problem:** Maps smaller than 6×7 break spawn zone calculations.
 
@@ -96,7 +96,7 @@ if squadron and is_instance_valid(squadron):
 ### 5. Static ID counter race conditions
 
 **Location:** `squadron.gd`, `pilot.gd`
-**GitHub Issue:** [#TBD](https://github.com/blamechris/exodus-loop/issues)
+**GitHub Issue:** [#127](https://github.com/blamechris/exodus-loop/issues/127)
 
 **Problem:** Static ID counters (`_next_id`) not synced after save load, risking ID collisions.
 
@@ -110,7 +110,7 @@ Squadron._next_id = loaded_squadrons.map(func(s): return s.id).max() + 1
 ### 6. Modal cleanup on screen exit
 
 **Location:** `battle_screen.gd:266-276`
-**GitHub Issue:** [#TBD](https://github.com/blamechris/exodus-loop/issues)
+**GitHub Issue:** [#128](https://github.com/blamechris/exodus-loop/issues/128)
 
 **Problem:** Modals not cleaned up when exiting battle screen, potential memory leak.
 
@@ -127,7 +127,7 @@ func _exit_tree() -> void:
 ### 7. Race condition in screen transitions
 
 **Location:** `main.gd:84-90`
-**GitHub Issue:** [#TBD](https://github.com/blamechris/exodus-loop/issues)
+**GitHub Issue:** [#129](https://github.com/blamechris/exodus-loop/issues/129)
 
 **Problem:** Double-click can trigger multiple transitions, overwriting destination.
 
@@ -147,7 +147,7 @@ func _on_screen_change_requested(name: String, params: Dictionary) -> void:
 ### 8. Infinite loop in asteroid placement
 
 **Location:** `battle_map_generator.gd:643-676`
-**GitHub Issue:** [#TBD](https://github.com/blamechris/exodus-loop/issues)
+**GitHub Issue:** [#130](https://github.com/blamechris/exodus-loop/issues/130)
 
 **Problem:** No max iteration guard in asteroid placement loop.
 
@@ -165,7 +165,7 @@ while not placed and attempts < max_attempts:
 ### 9. Save migration version jumps
 
 **Location:** `save_manager.gd:71-150`
-**GitHub Issue:** [#TBD](https://github.com/blamechris/exodus-loop/issues)
+**GitHub Issue:** [#131](https://github.com/blamechris/exodus-loop/issues/131)
 
 **Problem:** v1→v6 jumps may skip intermediate migrations.
 
