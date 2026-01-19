@@ -62,7 +62,7 @@ assert(width >= 6 and height >= 7, "Map too small for spawn zones")
 ### 3. Sequential combat contradicts GDD
 
 **Location:** `combat_resolver.gd:147-224`
-**GitHub Issue:** [#TBD](https://github.com/blamechris/exodus-loop/issues)
+**GitHub Issue:** [#134](https://github.com/blamechris/exodus-loop/issues/134)
 
 **Problem:** Original GDD specifies "simultaneous" combat, but implementation is sequential (initiative-based).
 
@@ -77,7 +77,7 @@ assert(width >= 6 and height >= 7, "Map too small for spawn zones")
 ### 4. Missing null safety
 
 **Locations:** Multiple files
-**GitHub Issue:** [#TBD](https://github.com/blamechris/exodus-loop/issues)
+**GitHub Issue:** [#135](https://github.com/blamechris/exodus-loop/issues/135)
 
 **Problem:** Many method calls lack null checks before invocation.
 
@@ -183,7 +183,7 @@ while version < CURRENT_VERSION:
 ### Magic numbers throughout codebase
 
 **Locations:** Multiple files
-**GitHub Issue:** [#TBD](https://github.com/blamechris/exodus-loop/issues)
+**GitHub Issue:** [#136](https://github.com/blamechris/exodus-loop/issues/136)
 
 Hardcoded values should be extracted to named constants. Examples:
 - Morale thresholds (80, 20)
@@ -196,7 +196,7 @@ Hardcoded values should be extracted to named constants. Examples:
 ### Incomplete type hints
 
 **Locations:** `game_state.gd`, `squadron.gd`
-**GitHub Issue:** [#TBD](https://github.com/blamechris/exodus-loop/issues)
+**GitHub Issue:** [#137](https://github.com/blamechris/exodus-loop/issues/137)
 
 Public APIs lack return type hints:
 ```gdscript
@@ -212,7 +212,7 @@ func get_adjacent_cells(pos: Vector2i) -> Array[Vector2i]:
 ### Debug prints in production
 
 **Location:** `carrier.gd`
-**GitHub Issue:** [#TBD](https://github.com/blamechris/exodus-loop/issues)
+**GitHub Issue:** [#138](https://github.com/blamechris/exodus-loop/issues/138)
 
 Print statements left in production code.
 
@@ -221,7 +221,7 @@ Print statements left in production code.
 ### Inconsistent RNG seeding
 
 **Location:** Multiple procedural generators
-**GitHub Issue:** [#TBD](https://github.com/blamechris/exodus-loop/issues)
+**GitHub Issue:** [#139](https://github.com/blamechris/exodus-loop/issues/139)
 
 Mix of instance vs function-scoped RNG causing inconsistent reproducibility.
 
@@ -230,7 +230,7 @@ Mix of instance vs function-scoped RNG causing inconsistent reproducibility.
 ### Asymmetric can_attack logic
 
 **Location:** `squadron.gd`
-**GitHub Issue:** [#TBD](https://github.com/blamechris/exodus-loop/issues)
+**GitHub Issue:** [#140](https://github.com/blamechris/exodus-loop/issues/140)
 
 Miners handled differently from other types in attack validation.
 
@@ -260,4 +260,4 @@ Miners handled differently from other types in attack validation.
 
 ---
 
-*Last updated: 2026-01-18*
+*Last updated: 2026-01-19*
