@@ -16,7 +16,7 @@ const config: QuartzConfig = {
       provider: "plausible",
     },
     locale: "en-US",
-    baseUrl: "blamechris.github.io/exodus-loop-docs",
+    baseUrl: "www.blamechris.com/exodus-loop-docs",
     ignorePatterns: ["private", "templates", ".obsidian", "quartz", "node_modules", "archive", "package*.json", "tsconfig.json", "*.config.ts", "*.layout.ts"],
     defaultDateType: "modified",
     theme: {
