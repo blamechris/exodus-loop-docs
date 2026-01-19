@@ -1,0 +1,184 @@
+name: Deploy Quartz to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      runner_mode:
+        description: 'Runner selection'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - self-hosted
+          - github
+          - skip
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy-quartz-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  decide_runner:
+    runs-on: self-hosted
+    outputs:
+      runner_label: ${{ steps.decision.outputs.runner_label || steps.decision_unix.outputs.runner_label }}
+      should_skip: ${{ steps.decision.outputs.should_skip || steps.decision_unix.outputs.should_skip }}
+    steps:
+      - name: Determine runner (Windows)
+        id: decision
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $INPUT_MODE = "${{ github.event.inputs.runner_mode || 'auto' }}"
+          $RUNNER = "self-hosted"
+
+          Write-Host "::notice::Input mode: $INPUT_MODE"
+
+          if ($INPUT_MODE -eq "skip") {
+            "should_skip=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+            "runner_label=self-hosted" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+            Write-Host "::notice::Workflow skipped"
+            exit 0
+          }
+
+          if ($INPUT_MODE -eq "self-hosted") {
+            $RUNNER = "self-hosted"
+            Write-Host "::notice::Using self-hosted runner (explicit override)"
+          } elseif ($INPUT_MODE -eq "github") {
+            $RUNNER = "ubuntu-latest"
+            Write-Host "::notice::Using GitHub-hosted runner (explicit override)"
+          } elseif ($INPUT_MODE -eq "auto") {
+            $RUNNER = "self-hosted"
+            Write-Host "::notice::Using self-hosted runner (default)"
+          }
+
+          "should_skip=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "runner_label=$RUNNER" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          Write-Host "::notice::Selected runner: $RUNNER"
+
+      - name: Determine runner (macOS/Linux)
+        id: decision_unix
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          INPUT_MODE="${{ github.event.inputs.runner_mode || 'auto' }}"
+          RUNNER="self-hosted"
+
+          echo "::notice::Input mode: $INPUT_MODE"
+
+          if [[ "$INPUT_MODE" == "skip" ]]; then
+            echo "should_skip=true" >> $GITHUB_OUTPUT
+            echo "runner_label=self-hosted" >> $GITHUB_OUTPUT
+            echo "::notice::Workflow skipped"
+            exit 0
+          fi
+
+          if [[ "$INPUT_MODE" == "self-hosted" ]]; then
+            RUNNER="self-hosted"
+            echo "::notice::Using self-hosted runner (explicit override)"
+          elif [[ "$INPUT_MODE" == "github" ]]; then
+            RUNNER="ubuntu-latest"
+            echo "::notice::Using GitHub-hosted runner (explicit override)"
+          elif [[ "$INPUT_MODE" == "auto" ]]; then
+            RUNNER="self-hosted"
+            echo "::notice::Using self-hosted runner (default)"
+          fi
+
+          echo "should_skip=false" >> $GITHUB_OUTPUT
+          echo "runner_label=$RUNNER" >> $GITHUB_OUTPUT
+          echo "::notice::Selected runner: $RUNNER"
+
+  deploy:
+    runs-on: ${{ needs.decide_runner.outputs.runner_label }}
+    needs: decide_runner
+    if: needs.decide_runner.outputs.should_skip != 'true'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Clear npx cache (Windows)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $npxCache = Join-Path $env:USERPROFILE ".npm\_npx"
+          if (Test-Path $npxCache) {
+            Remove-Item -Recurse -Force $npxCache -ErrorAction SilentlyContinue
+            Write-Host "Cleared npx cache at $npxCache"
+          }
+
+      - name: Clear npx cache (macOS/Linux)
+        if: runner.os != 'Windows'
+        run: rm -rf ~/.npm/_npx || true
+
+      - name: Build Quartz site
+        run: npx quartz build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: gh-pages
+          force_orphan: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'deploy: Quartz site deployment from ${{ github.sha }}'
+
+      - name: Notify Discord of successful deployment (Linux/macOS)
+        if: success() && runner.os != 'Windows'
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "Discord webhook not configured, skipping notification"
+            exit 0
+          fi
+          COMMIT_MESSAGE=$(git log -1 --pretty=format:'%s' | head -c 100)
+          COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')
+          COMMIT_SHA_SHORT=$(git rev-parse --short HEAD)
+
+          curl -H "Content-Type: application/json" \
+          -d "{
+            \"embeds\": [{
+              \"title\": \"Exodus Loop Docs Deployed\",
+              \"description\": \"Documentation has been updated and deployed.\",
+              \"color\": 3447003,
+              \"fields\": [
+                {
+                  \"name\": \"Commit\",
+                  \"value\": \"\`$COMMIT_SHA_SHORT\` - $COMMIT_MESSAGE\",
+                  \"inline\": false
+                },
+                {
+                  \"name\": \"Author\",
+                  \"value\": \"$COMMIT_AUTHOR\",
+                  \"inline\": true
+                },
+                {
+                  \"name\": \"Site\",
+                  \"value\": \"[View Documentation](https://blamechris.github.io/exodus-loop-docs/)\",
+                  \"inline\": true
+                }
+              ],
+              \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\"
+            }]
+          }" \
+          "$DISCORD_WEBHOOK_URL"
