@@ -11,9 +11,13 @@ Exodus Loop uses a state-machine approach to screen management, with `main.gd` a
 ```mermaid
 stateDiagram-v2
     [*] --> Title
-    Title --> NodeMap: New Game / Continue
+    Title --> FleetSetup: New Game
+    Title --> NodeMap: Continue
     Title --> Upgrades: Meta Upgrades
+    Title --> Achievements: Achievements
     Title --> Settings: Settings
+
+    FleetSetup --> NodeMap: Start Run
 
     NodeMap --> Battle: Enter Node
     NodeMap --> Upgrades: View Upgrades
@@ -30,6 +34,7 @@ stateDiagram-v2
     Upgrades --> Title: Back (from title)
     Upgrades --> NodeMap: Back (from map)
 
+    Achievements --> Title: Back
     Settings --> Title: Back
 ```
 
@@ -40,10 +45,12 @@ stateDiagram-v2
 | Screen | File | Purpose |
 |--------|------|---------|
 | Title | `screens/title/title_screen.tscn` | Main menu |
+| FleetSetup | `screens/fleet_setup/fleet_setup_screen.tscn` | Carrier selection and run configuration |
 | NodeMap | `screens/node_map/node_map_screen.tscn` | Run navigation |
-| Battle | `screens/battle/battle_screen.tscn` | Combat |
+| Battle | `screens/battle/battle_screen.tscn` | Combat (includes Preparation phase) |
 | Results | `screens/results/results_screen.tscn` | Post-battle |
 | Upgrades | `screens/upgrades/upgrades_screen.tscn` | Meta-progression |
+| Achievements | `screens/achievements/achievements_screen.tscn` | View unlocked achievements |
 | BlessedSelection | `screens/blessed_selection/blessed_selection_screen.tscn` | Bless squadrons |
 | Settings | `screens/settings/settings_screen.tscn` | Options |
 | LoadoutSelection | `screens/loadout/loadout_selection_screen.tscn` | Choose starting squadrons |
@@ -111,7 +118,9 @@ The battle screen itself has complex internal states:
 
 ```mermaid
 stateDiagram-v2
-    [*] --> INTEL
+    [*] --> PREPARATION
+    PREPARATION --> INTEL: Commit deployment
+
     INTEL --> COMMAND: Tap to continue
 
     COMMAND --> RESOLUTION: End Turn
@@ -130,17 +139,23 @@ stateDiagram-v2
 ### Battle Phases
 
 ```gdscript
-enum BattlePhase {
-    INTEL,      # Read-only, view enemy positions
-    COMMAND,    # Player assigns actions
-    RESOLUTION, # Execute all actions
-    UPKEEP,     # Reset state for next turn
-    VICTORY,    # Battle won
-    DEFEAT      # Battle lost
+enum TurnPhase {
+    PREPARATION, # Initial carrier/squadron placement
+    INTEL,       # Read-only, view enemy positions
+    COMMAND,     # Player assigns actions
+    RESOLUTION,  # Execute all actions
+    UPKEEP,      # Reset state for next turn
+    VICTORY,     # Battle won
+    DEFEAT       # Battle lost
 }
 
-var current_phase: BattlePhase = BattlePhase.INTEL
+var current_phase: TurnPhase = TurnPhase.PREPARATION
 ```
+
+**Preparation Phase Details:**
+- Player places carrier in spawn zone (bottom 2 rows)
+- Deploy squadrons from hangar within 2 cells of carrier
+- Commit button transitions to INTEL phase
 
 ### Phase Transitions
 

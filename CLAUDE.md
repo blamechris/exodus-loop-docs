@@ -17,10 +17,49 @@ Claude must NEVER include ANY of the following in commits, PRs, or any files:
 ## Repository Purpose
 
 This repository contains documentation for Exodus Loop:
-- GDD v1.0 (Game Design Document reflecting actual implementation)
+- GDD (Game Design Document reflecting actual implementation)
 - Developer onboarding guide
 - Technical references
 - Tech debt tracking
+
+## Documentation Sync Protocol
+
+**When to sync documentation:**
+1. After merging PRs that add/change gameplay features
+2. After balance changes (constants, stats)
+3. After adding new screens or UI components
+4. After major refactoring of documented systems
+
+**Sync checklist - review these areas for changes:**
+
+| Main Repo Change | Docs to Update |
+|------------------|----------------|
+| New squadron type | `game-design/squadrons.md` |
+| Carrier changes | `game-design/carriers.md` |
+| Combat mechanics | `game-design/combat.md`, `developer-guide/combat-system.md` |
+| New upgrades | `game-design/progression.md` |
+| Balance constants | `game-design/balance.md`, `game-design/progression.md` |
+| New screens | `developer-guide/screens.md` |
+| New achievements | `game-design/achievements.md` |
+| Pilot system | `game-design/pilots.md` |
+| Save system | `developer-guide/save-system.md` |
+
+**Sync workflow:**
+1. Check main repo recent commits: `git log --oneline -20` (in exodus-loop)
+2. Identify feature PRs since last docs update (check GDD version date)
+3. Read relevant source files to get accurate details
+4. Update affected documentation pages
+5. Update GDD version and date in `game-design/index.md`
+6. Commit and push to deploy
+
+**Key source files for documentation:**
+- `src/autoload/balance_constants.gd` - All balance numbers
+- `src/entities/squadron.gd` - Squadron stats and types
+- `src/entities/carrier.gd` - Carrier types
+- `src/entities/pilot.gd` - Pilot system
+- `src/data/achievement_data.gd` - Achievement definitions
+- `src/data/upgrade_data.gd` - Meta-upgrade definitions
+- `src/autoload/game_state.gd` - Core game mechanics
 
 ## Tech Stack
 
@@ -33,17 +72,19 @@ This repository contains documentation for Exodus Loop:
 ```
 content/
 ├── index.md               # Landing page
-├── game-design/           # GDD v1.0
-│   ├── index.md
-│   ├── squadrons.md
-│   ├── combat.md
-│   ├── pilots.md
-│   ├── progression.md
-│   └── balance.md
+├── game-design/           # GDD v1.1
+│   ├── index.md           # Overview and implementation status
+│   ├── squadrons.md       # 7 squadron types with stats
+│   ├── carriers.md        # 4 player carriers, enemy carriers
+│   ├── combat.md          # Prep phase, resolution, damage
+│   ├── pilots.md          # Perks, morale, ranks
+│   ├── progression.md     # 22 upgrades, Admiral skills
+│   ├── achievements.md    # 6 unlockable achievements
+│   └── balance.md         # Extracted constants
 ├── developer-guide/       # Onboarding
 │   ├── index.md
 │   ├── architecture.md
-│   ├── screens.md
+│   ├── screens.md         # Screen registry and navigation
 │   ├── combat-system.md
 │   ├── save-system.md
 │   └── testing.md

@@ -8,13 +8,35 @@ Exodus Loop uses **sequential initiative-based combat**, not simultaneous resolu
 
 ## Combat Phases
 
-Each turn follows a 4-phase structure:
+Each battle begins with a **Preparation Phase**, followed by repeating 4-phase combat turns:
 
 ```mermaid
 graph LR
-    INTEL --> COMMAND --> RESOLUTION --> UPKEEP
+    PREPARATION --> INTEL --> COMMAND --> RESOLUTION --> UPKEEP
     UPKEEP --> INTEL
 ```
+
+### Preparation Phase (Turn 0)
+
+Before combat begins, position your forces:
+
+**Carrier Placement:**
+- Place your carrier anywhere in the spawn zone (bottom 2 rows)
+- Default position: center-bottom of map
+
+**Fighter Deployment:**
+- Launch squadrons from hangar within **2 cells** of the carrier
+- Must be within spawn zone
+- Choose which fighters to deploy based on enemy composition
+- Remaining fighters stay in hangar for mid-battle launches
+
+**Controls:**
+- Click cell to place carrier
+- Select fighter in hangar, click valid cell to deploy
+- "Undeploy" returns a fighter to hangar
+- "Commit" button starts the battle
+
+---
 
 ### Phase 1: INTEL
 

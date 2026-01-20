@@ -173,7 +173,9 @@ Sensor tier only reveals information—it doesn't lock gameplay content.
 **Base (no upgrades):**
 - Metal: 10
 - Energy: 10
-- Fuel: 3
+- Fuel: 10
+- Food: 5
+- Global Ammo: 5
 
 **With supply_cache_1:** +3 Metal, +3 Energy
 **With fuel_reserves_1:** +1 Fuel
