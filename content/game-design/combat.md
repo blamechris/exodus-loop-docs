@@ -20,21 +20,37 @@ graph LR
 
 Before combat begins, position your forces:
 
+**Deployment Zone:**
+- Configurable per battle (default: 3 rows at bottom for player)
+- Grid size: 11×13 cells for campaign battles
+- Zone highlighted with green tint
+
+**Ship Selection:**
+- Tap any ship on grid → Info card appears with stats
+- Tap ship in Fleet Roster panel → Same info card
+- Holographic connection line links ship to card
+- Tap empty cell to dismiss selection
+
 **Carrier Placement:**
-- Place your carrier anywhere in the spawn zone (bottom 2 rows)
-- Default position: center-bottom of map
+- Drag carrier within deployment zone to reposition
+- Multi-tile ships validated to stay within grid
 
 **Fighter Deployment:**
-- Launch squadrons from hangar within **2 cells** of the carrier
-- Must be within spawn zone
-- Choose which fighters to deploy based on enemy composition
+- Drag ships within deployment zone to reposition
+- Ships with "Early Launch" trait can deploy from carrier during positioning
+- Tap docked ship with trait → Launch modal appears
 - Remaining fighters stay in hangar for mid-battle launches
 
+**Fleet Roster Panels:**
+- Player roster on left shows all friendly ships
+- Enemy roster on right (visible in creative mode)
+- Ships show current position (e.g., "@ A5") or "DOCKED"
+- Tap ship in roster to select and view info
+
 **Controls:**
-- Click cell to place carrier
-- Select fighter in hangar, click valid cell to deploy
-- "Undeploy" returns a fighter to hangar
-- "Commit" button starts the battle
+- Tap ship to select and view info card
+- Drag ship to reposition within deployment zone
+- "Done" button transitions to INTEL phase
 
 ---
 

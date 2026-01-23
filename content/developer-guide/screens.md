@@ -153,9 +153,14 @@ var current_phase: TurnPhase = TurnPhase.PREPARATION
 ```
 
 **Preparation Phase Details:**
-- Player places carrier in spawn zone (bottom 2 rows)
-- Deploy squadrons from hangar within 2 cells of carrier
-- Commit button transitions to INTEL phase
+- Configurable deployment zone (default: bottom 3 rows)
+- Campaign battles use 11×13 grid
+- Tap ship → SelectedShipCard with animated boot sequence
+- Holographic selection line connects ship to info card
+- Fleet roster panels show all ships (player left, enemy right)
+- Ships with "Early Launch" trait can deploy from carrier
+- Drag ships to reposition within deployment zone
+- "Done" button transitions to INTEL phase
 
 ### Phase Transitions
 
