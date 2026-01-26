@@ -4,19 +4,21 @@ title: Combat System
 
 # Combat System
 
-Exodus Loop uses **sequential initiative-based combat**, not simultaneous resolution. This is a deliberate departure from the original GDD which specified simultaneous combat.
+Exodus Loop uses a **Puzzle Pirates-inspired intent-based combat system** with simultaneous resolution. Players queue 3 movement intents per ship, then all ships execute in speed order across 3 sub-phases.
 
 ## Combat Phases
 
-Each battle begins with a **Preparation Phase**, followed by repeating 4-phase combat turns:
+Each battle begins with a **Positioning Phase**, followed by repeating combat turns:
 
 ```mermaid
 graph LR
-    PREPARATION --> INTEL --> COMMAND --> RESOLUTION --> UPKEEP
-    UPKEEP --> INTEL
+    POSITIONING --> COMMIT --> RESOLVE --> UPKEEP
+    UPKEEP --> COMMIT
 ```
 
-### Preparation Phase (Turn 0)
+---
+
+## Positioning Phase
 
 Before combat begins, position your forces:
 
@@ -36,185 +38,224 @@ Before combat begins, position your forces:
 - Multi-tile ships validated to stay within grid
 
 **Fighter Deployment:**
-- Drag ships within deployment zone to reposition
 - Ships with "Early Launch" trait can deploy from carrier during positioning
 - Tap docked ship with trait → Launch modal appears
 - Remaining fighters stay in hangar for mid-battle launches
 
-**Fleet Roster Panels:**
-- Player roster on left shows all friendly ships
-- Enemy roster on right (visible in creative mode)
-- Ships show current position (e.g., "@ A5") or "DOCKED"
-- Tap ship in roster to select and view info
-
 **Controls:**
 - Tap ship to select and view info card
 - Drag ship to reposition within deployment zone
-- "Done" button transitions to INTEL phase
+- "Done" button transitions to COMMIT phase
 
 ---
 
-### Phase 1: INTEL
+## Commit Phase
 
-- View enemy positions and fuzzy intents (based on sensor tier)
-- Read-only phase - no actions available
-- Tap/click to advance
+During COMMIT, set orders for all your ships:
 
-### Phase 2: COMMAND
+### 3-Action Queue
 
-- Assign actions to all squadrons
-- Queue launches from hangar
-- Set carrier actions (MOVE, REPAIR, REARM, etc.)
-- Undo available before execution
+Each ship has a 3-slot action queue for movement intents:
 
-### Phase 3: RESOLUTION
+```
+┌─────────────────── ACTION QUEUE ───────────────────┐
+│  [SLOT 1]      [SLOT 2]      [SLOT 3]             │
+│  FORWARD       TURN LEFT     FORWARD              │
+│  🔥 FIRE       ○ HOLD        🔥 FIRE              │
+└────────────────────────────────────────────────────┘
+```
 
-Execution order:
-1. Execute launches (free action)
-2. Set enemy intents (AI decisions)
-3. Execute carrier action
-4. Execute movements (sequential, with interception checks)
-5. Execute landings (return to hangar)
-6. Resolve combat in contested cells
-7. Apply carrier damage from enemies
-8. Clear all actions
-9. Remove destroyed squadrons
+**Movement Intents:**
+| Intent | Effect |
+|--------|--------|
+| FORWARD | Move 1 cell in facing direction |
+| TURN_LEFT | Rotate 90° left + move diagonally |
+| TURN_RIGHT | Rotate 90° right + move diagonally |
+| HOLD | Stay in place, no action |
+| LAND | Return to carrier (must be adjacent) |
 
-### Phase 4: UPKEEP
+**Fire Toggles:**
+- Each slot has an independent fire toggle
+- Enabled = ship attempts to fire after moving in that sub-phase
+- Targets are auto-selected based on weapon arc and range
 
-- Make launched squadrons ready
-- Reset AP for all units
-- Apply type ability upkeep (e.g., Gunship regen)
-- Apply hazard upkeep effects
+### Dynamic Movement Slots
+
+Ships have different movement capacities based on size:
+
+| Ship Size | Base Slots | Blocked Phases |
+|-----------|------------|----------------|
+| SMALL (fighters) | 3 | None |
+| MEDIUM (frigates) | 2 | 1 blocked |
+| LARGE (carriers) | 1 | 2 blocked |
+
+**Blocked Phases:** Ships with fewer slots have "blocker" tokens that mark phases where they cannot move. Blockers can be dragged to different slots.
+
+**Engine Damage:** Damaged engines reduce available slots:
+- Engine health > 33%: No penalty
+- Engine health 1-33%: -1 slot
+- Engine health 0%: -2 slots
+
+### Carrier Launch System
+
+Carriers use **per-phase launch toggles** instead of movement intents:
+
+```
+┌─────────────────── CARRIER ACTIONS ────────────────┐
+│  [SLOT 1]      [SLOT 2]      [SLOT 3]             │
+│  FORWARD       HOLD          HOLD                 │
+│  🔥 FIRE       ○ HOLD        ○ HOLD               │
+│  [LNCH: Port]  [LNCH: ---]   [LNCH: Stbd]        │
+└────────────────────────────────────────────────────┘
+```
+
+**LNCH Toggles:**
+- Each phase has independent launch toggles per bay
+- Click LNCH to cycle: `--- → Port Bay → Starboard Bay → ---`
+- Multiple ships can launch in the same phase (one per bay)
+- Launches happen **BEFORE** movement in each sub-phase
+
+### Docked Ship Pre-Orders
+
+Set orders for docked ships **before they launch**:
+
+1. Click "☰ FLEET" button to open Fleet Roster during COMMIT
+2. Select a docked ship from the roster
+3. Set movement intents and fire toggles as "pre-orders"
+4. Orders only execute when ship actually launches
+
+**Pre-Order Rules:**
+- If carrier doesn't launch the ship, pre-orders are ignored
+- Useful for coordinated fleet maneuvers
+- Launched ships can move in the same phase they launch
+
+### Action Bars
+
+Ships display a visual indicator of queued actions:
+
+```
+[███|░░░|░░░]  = 1 action queued
+[███|███|░░░]  = 2 actions queued
+[███|███|███]  = 3 actions queued
+```
+
+Segments fill based on: non-HOLD movements + enabled fires + launch orders.
+
+---
+
+## Resolve Phase
+
+All ships execute their queued actions simultaneously across 3 sub-phases.
+
+### Sub-Phase Resolution Order
+
+For each sub-phase (1, 2, 3):
+
+1. **Launches** - Carriers launch ships from enabled bays
+2. **Movement** - All ships execute movement intent for this slot (speed order)
+3. **Collisions** - Resolve ships at same position
+4. **Weapons Fire** - Ships with fire enabled attempt to shoot
+5. **Dogfights** - Adjacent enemy ships may engage
+
+### Speed-Based Movement
+
+Ships move in order of speed (highest first):
+
+| Ship Type | Speed | Notes |
+|-----------|-------|-------|
+| Interceptor | 5 | Fastest - moves first |
+| Scout | 4 | Fast recon |
+| Gunship | 3 | Medium |
+| Bomber | 2 | Slow but powerful |
+| Carrier | 1 | Slowest - moves last |
+
+Ties broken alphabetically by ship ID for determinism.
+
+### Collision Rules
+
+When ships end up at the same position:
+- Larger ship wins (gets the cell)
+- Equal size: faster ship wins
+- Both ships take collision damage based on size
+- Losing ship bounces back and reverses facing
+
+### Weapons Fire
+
+Ships with fire enabled for this sub-phase:
+- Auto-target nearest enemy in weapon arc
+- Range varies by weapon type (default: 3 cells)
+- Ammo consumed per shot
+- Damage calculated: `ATK + Roll - DEF`
+
+---
+
+## Upkeep Phase
+
+End-of-turn maintenance:
+
+### Component Repair
+
+Damaged components have a chance to self-repair:
+
+**Base Repair Chance:** 5% per turn
+
+**Modifiers:**
+- Pilot perks: +10-30%
+- Ship upgrades: +5-15%
+- Carrier nearby (RECOVER mode): +20%
+
+**Repair Effects:**
+- Restores 33% component health
+- Clears disabled/jammed status
+- Updates movement slots if engine repaired
+
+### Other Upkeep
+
 - Advance jump drive charge
-- Spawn reinforcements
-- Check for multi-wave triggers
-- Advance turn number
+- Spawn reinforcements (if any)
+- Check victory/defeat conditions
+- Advance turn counter
 
 ---
 
-## Combat Resolution
+## Damage & Combat
 
-Combat is **sequential** within each contested cell:
-
-### Initiative System
-
-1. All units in the contested cell roll initiative: `1d[Spd+1]`
-2. Units sorted by roll (descending), then SPD stat (descending) for ties
-3. Each unit attacks in order, targeting the slowest living enemy
-4. **Dead units don't attack** - units destroyed earlier skip their turn
-
-```
-Example Initiative:
-  Scout (SPD 4): rolls d5 = 4
-  Interceptor (SPD 3): rolls d4 = 3
-  Bomber (SPD 1): rolls d2 = 1
-
-  Attack order: Scout → Interceptor → Bomber
-  If Scout kills Bomber, Bomber never attacks
-```
-
----
-
-## Damage Formula
+### Damage Formula
 
 ```
 Damage = max(0, DiceRoll + ATK - DEF)
 ```
 
-Where:
-- **DiceRoll** = RPS-determined die (d4, d6, or d10)
-- **ATK** = Attacker's effective attack
-- **DEF** = Defender's effective defense
+### RPS Triangle (Dogfights)
 
-### RPS Dice Selection
-
-| Attacker vs Defender | Die Type | Range |
-|----------------------|----------|-------|
-| Advantage (e.g., Interceptor vs Bomber) | d10 | 1-10 |
-| Neutral (no relationship) | d6 | 1-6 |
-| Disadvantage (e.g., Bomber vs Interceptor) | d4 | 1-4 |
-
-Frigate, Destroyer, Scout, and Miner always use d6 (neutral).
-
-### Effective Stats
-
-**Effective ATK includes:**
-- Base ATK
-- Action modifier (+1 for ATTACK or DEFEND action)
-- Pilot stat bonus
-- Pilot morale modifier
-- Trait bonuses
-- Admiral bonuses (player units only)
-- Fire Control Network bonus
-- Accuracy modifier from grid position
-
-**Effective DEF includes:**
-- Base DEF
-- Action modifier (+2 for DEFEND action)
-- Pilot stat bonus
-- Pilot morale modifier
-- Last Stand passive (+2 when below 50% hull)
-- Trait bonuses
-- Hazard DEF bonus from grid position
-
----
-
-## Action Modifiers
-
-| Action | ATK Modifier | DEF Modifier |
-|--------|--------------|--------------|
-| ATTACK | +1 | 0 |
-| DEFEND | +1 | +2 |
-| MOVE | 0 | 0 |
-| LAND | 0 | 0 |
-
----
-
-## Special Combat Mechanics
-
-### Destroyer Torpedo Salvo
-
-When a Destroyer attacks:
-1. Target's DEF is reduced by 1 (armor piercing)
-2. Adjacent enemies to target take splash damage (1 HP)
-
-### Interception System
-
-Units in ATTACK or DEFEND mode can intercept enemies passing through their cell:
-- Interception is one-sided (defender only)
-- Moving unit stops at interception cell
-- Standard combat resolution applies
-
-### Fire Control Network
-
-Frigates in DEFEND mode provide +1 ATK to adjacent friendly units:
-- Orthogonal neighbors only (Manhattan distance 1)
-- Stacks with multiple Frigates
-- Frigate does NOT buff itself
-
----
-
-## Combat Log Format
+When adjacent ships engage:
 
 ```
-=== Combat at C3 ===
-Initiative Order:
-  > Enemy B-Bravo-3: 8 (SPD 3)
-  + I-Alpha-1: 7 (SPD 3)
-  > Enemy G-Charlie-2: 4 (SPD 2)
-
-I-Alpha-1 [d10:7+1=8] vs Enemy G-Charlie-2 [d4:1+2=3]
-  → 8/3 dmg → Both survive
-
-Enemy B-Bravo-3 [d6:2+3=5] vs I-Alpha-1 [NO AMMO]
-  → 5/0 dmg → Enemy B destroyed
+Interceptor > Bomber > Gunship > Interceptor
 ```
 
-**Legend:**
-- `[dX:Y+Z=T]` = Die size : Base roll + ATK modifier = Total
-- `[NO AMMO]` = Unit cannot return fire
-- `[DEF+]` = DEFEND action active
+| Matchup | Attacker Die |
+|---------|--------------|
+| Advantage | d10 |
+| Neutral | d6 |
+| Disadvantage | d4 |
+
+---
+
+## Landing Ships
+
+Ships can return to carrier using the **LAND** intent:
+
+**Requirements:**
+- Ship must be adjacent to carrier
+- Carrier bay must have capacity
+- Ship must be "small" class (fighters)
+
+**Landing Flow:**
+1. Assign LAND intent in action queue
+2. During resolution, ship moves to carrier position
+3. Ship becomes docked (removed from grid)
+4. Can be re-launched on future turns
 
 ---
 
