@@ -15,11 +15,11 @@ Exodus Loop uses JSON-based persistence with versioned schemas for forward compa
 
 ---
 
-## Meta Save Schema (v6)
+## Meta Save Schema (v13)
 
 ```json
 {
-  "version": 6,
+  "version": 13,
   "meta_xp": 1500,
   "unlocked_upgrades": [
     "reinforced_hull_1",
@@ -33,44 +33,63 @@ Exodus Loop uses JSON-based persistence with versioned schemas for forward compa
     "unlocked_skills": ["LAST_STAND", "EJECT_PROTOCOL"],
     "skill_tree_seed": 12345
   },
-  "blessed_squadrons": [
-    {
-      "version": 4,
-      "id": 1,
-      "type": 0,
-      "callsign": "I-Alpha-1",
-      "hull": 3,
-      "max_hull": 3,
-      "assigned_pilot_id": 5,
-      "is_blessed": true
-    }
-  ],
-  "carried_over_pilots": [
-    {
-      "version": 3,
-      "id": 5,
-      "name": "Maverick",
-      "perks": [0, 2],
-      "xp": 150,
-      "level": 3,
-      "morale": 100,
-      "passive_ability": "critical_eye",
-      "kills": 12,
-      "missions": 8,
-      "is_alive": true,
-      "is_carried_over": true,
-      "is_retired": false
-    }
-  ],
+  "blessed_squadrons": [...],
+  "carried_over_pilots": [...],
   "hall_of_fame": [],
-  "statistics": {
-    "runs_completed": 15,
-    "runs_won": 3,
-    "total_kills": 245,
-    "total_play_time": 12600
+  "statistics": {...},
+  "exodus_fleet": {
+    "version": 1,
+    "components": [
+      {
+        "id": 1,
+        "cell_type": 3,
+        "shape_id": 5,
+        "rarity": 2,
+        "special_traits": ["power_efficient"],
+        "damage_percent": 0.0,
+        "source": "extraction",
+        "extraction_run": 5,
+        "extraction_date": 1706300000,
+        "is_equipped": false
+      }
+    ],
+    "saved_carriers": [
+      {
+        "id": 1,
+        "name": "Glass Cannon",
+        "class_type": 2,
+        "config": { /* ShipConfigurationV2 dict */ },
+        "tags": ["offensive", "fast"],
+        "created_date": 1706200000,
+        "last_used_date": 1706300000
+      }
+    ],
+    "total_extracted": 15,
+    "total_lost": 5
   }
 }
 ```
+
+### Exodus Fleet Schema
+
+| Field | Type | Description |
+|-------|------|-------------|
+| components | Array | Extracted components in fleet |
+| saved_carriers | Array | Saved carrier build configurations |
+| total_extracted | int | Lifetime components extracted |
+| total_lost | int | Components lost to carrier destruction |
+
+### ExtractedComponent Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| id | int | Unique component ID |
+| cell_type | int | ShipGridData.CellType enum |
+| shape_id | int | PolyominoData.ShapeId enum |
+| rarity | int | 0=Common, 1=Uncommon, 2=Rare, 3=Epic, 4=Legendary |
+| special_traits | Array | Trait IDs for this component |
+| damage_percent | float | 0.0-1.0, amount of damage |
+| is_equipped | bool | Currently at risk in a run |
 
 ---
 
@@ -170,6 +189,17 @@ func _migrate_meta_save(data: Dictionary) -> Dictionary:
     if version < 6:
         data["statistics"] = _default_statistics()
         version = 6
+
+    # v6 -> v13: Added exodus_fleet (versions 7-12 were intermediate)
+    if version < 13:
+        data["exodus_fleet"] = {
+            "version": 1,
+            "components": [],
+            "saved_carriers": [],
+            "total_extracted": 0,
+            "total_lost": 0
+        }
+        version = 13
 
     data["version"] = version
     return data
