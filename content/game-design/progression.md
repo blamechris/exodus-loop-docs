@@ -183,3 +183,65 @@ Sensor tier only reveals information—it doesn't lock gameplay content.
 **Hangar Capacity:**
 - Base: 3 squadrons
 - With expanded_hangar_1: 5 squadrons
+
+---
+
+## Exodus Fleet (Extraction System)
+
+The Exodus Fleet is a persistent collection of components and carrier builds that spans across runs.
+
+### Core Mechanics
+
+1. **Extraction**: Mark ONE component for extraction before each battle
+2. **Success**: If the run succeeds (victory OR escape), marked component joins your Exodus Fleet
+3. **Risk**: If carrier is destroyed, ALL equipped Exodus Fleet components are **LOST FOREVER**
+
+### Component Rarity
+
+| Rarity | Drop Rate | Stat Bonus | Special Traits |
+|--------|-----------|------------|----------------|
+| COMMON | 50% | +0% | None |
+| UNCOMMON | 30% | +10% | 1 minor trait |
+| RARE | 15% | +25% | 1 major trait |
+| EPIC | 4% | +40% | 2 traits |
+| LEGENDARY | 1% | +60% | Unique ability |
+
+### Component Draw at Run Start
+
+1. Select carrier class (Scout, Standard, Battle, Tender)
+2. Receive guaranteed pieces from class template
+3. Draw bonus components from class-weighted pool
+4. Optionally equip components from Exodus Fleet (at risk!)
+5. Place all components in Ship Builder V2
+
+### Fleet Management Screen
+
+Access the Exodus Fleet from the title screen to:
+
+| Tab | Function |
+|-----|----------|
+| **Components** | Browse all extracted components, filter by type/rarity |
+| **Carriers** | Load saved carrier builds |
+| **Workshop** | Repair damaged components, salvage for materials |
+| **Stats** | Fleet value, extraction history, losses |
+
+### Saved Carrier Builds
+
+- Save complete carrier configurations with name and tags
+- Quick-load builds at run start
+- Multiple builds per class type
+
+### Repair & Salvage
+
+**Repair:** Fix damaged components using Metal (cost scales with damage)
+
+**Salvage:** Destroy unwanted components for Metal:
+| Rarity | Base Value |
+|--------|------------|
+| Common | 5 Metal |
+| Uncommon | 15 Metal |
+| Rare | 30 Metal |
+| Epic | 60 Metal |
+| Legendary | 150 Metal |
+
+Damaged components yield reduced salvage value.
