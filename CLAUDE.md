@@ -43,6 +43,11 @@ This repository contains documentation for Exodus Loop:
 | New achievements | `game-design/achievements.md` |
 | Pilot system | `game-design/pilots.md` |
 | Save system | `developer-guide/save-system.md` |
+| Exodus Fleet | `internal/exodus-fleet.md` |
+| Reinforcements | `internal/reinforcements.md` |
+| Crafting/Blueprints | `internal/crafting.md` |
+| Alien factions | `game-design/factions.md` |
+| Ship Builder V2 | `game-design/carriers.md` |
 
 **Sync workflow:**
 1. Check main repo recent commits: `git log --oneline -20` (in exodus-loop)
@@ -60,6 +65,12 @@ This repository contains documentation for Exodus Loop:
 - `src/data/achievement_data.gd` - Achievement definitions
 - `src/data/upgrade_data.gd` - Meta-upgrade definitions
 - `src/autoload/game_state.gd` - Core game mechanics
+- `src/data/carrier/carrier_class_template.gd` - Carrier classes
+- `src/data/fleet/exodus_fleet.gd` - Exodus Fleet extraction
+- `src/systems/reinforcement_manager.gd` - Multi-wave battles
+- `src/systems/crafting/build_queue_manager.gd` - Crafting system
+- `src/systems/ship_builder/directional_damage.gd` - Sector damage
+- `src/systems/collision/capital_collision.gd` - Ship collisions
 
 ## Tech Stack
 
@@ -72,14 +83,15 @@ This repository contains documentation for Exodus Loop:
 ```
 content/
 ├── index.md               # Landing page
-├── game-design/           # GDD v1.1
+├── game-design/           # GDD v1.2
 │   ├── index.md           # Overview and implementation status
 │   ├── squadrons.md       # 7 squadron types with stats
-│   ├── carriers.md        # 4 player carriers, enemy carriers
+│   ├── carriers.md        # 4 player carriers, ship builder V2
 │   ├── combat.md          # Prep phase, resolution, damage
 │   ├── pilots.md          # Perks, morale, ranks
 │   ├── progression.md     # 22 upgrades, Admiral skills
 │   ├── achievements.md    # 6 unlockable achievements
+│   ├── factions.md        # Human and Nautolan factions
 │   └── balance.md         # Extracted constants
 ├── developer-guide/       # Onboarding
 │   ├── index.md
@@ -88,8 +100,12 @@ content/
 │   ├── combat-system.md
 │   ├── save-system.md
 │   └── testing.md
-└── internal/              # Tech debt
-    └── tech-debt.md
+└── internal/              # Internal systems
+    ├── index.md           # Systems overview
+    ├── tech-debt.md       # Prioritized issues
+    ├── exodus-fleet.md    # Meta-progression extraction
+    ├── reinforcements.md  # Multi-wave battles
+    └── crafting.md        # Blueprint crafting
 ```
 
 ## Development

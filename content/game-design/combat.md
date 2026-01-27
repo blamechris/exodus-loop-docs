@@ -268,3 +268,59 @@ Ships can return to carrier using the **LAND** intent:
 **Lose:**
 - Carrier destroyed (HP reaches 0)
 - No fuel and no squadrons (stranded)
+
+---
+
+## Reinforcements
+
+Battles may feature multiple waves of enemies. See [[../internal/reinforcements|Reinforcement System]] for details.
+
+**Wave Triggers:**
+- Turn threshold (after X turns)
+- Enemy casualties (when losses exceed %)
+- Carrier damage (when enemy carrier hit)
+- Distress beacon (enemy unit calls for help)
+
+**Encounter Types:**
+- Standard: 0-1 waves
+- Ambush: 1-2 waves (aggressive)
+- Elite: 1 wave (hunter trait)
+- Boss: 2-3 waves (distress beacon)
+
+---
+
+## Capital Ship Combat
+
+### Directional Damage
+
+When attacking capital ships, damage is applied to the sector facing the attacker:
+
+```
+        FRONT
+    +----------+
+ L  | L  C  R  |  R
+ E  |    O     |  I
+ F  |    R     |  G
+ T  |    E     |  H
+    +----------+  T
+        REAR
+```
+
+1. Attack direction determined by relative position
+2. Outer components in that sector hit first
+3. Damage flows inward toward Hull Core
+4. Sector disabled at 50% damage
+
+See [[carriers#directional-damage-system|Carriers - Directional Damage]] for sector effects.
+
+### Capital Collisions
+
+When two capital ships occupy the same cell:
+
+| Event | Damage |
+|-------|--------|
+| Base collision | 2 + size difference |
+| Smaller ship | +1 extra damage |
+| Edge blocked | +2 instead of pushback |
+
+Both ships are pushed 1 tile apart. Collisions can chain (max depth 2) if pushed into another ship.

@@ -4,8 +4,8 @@ title: Game Design Document v1.0
 
 # Exodus Loop - Game Design Document v1.0
 
-**Version:** 1.1 (reflects implementation as of v0.5.24)
-**Last Updated:** 2026-01-19
+**Version:** 1.2 (reflects implementation as of v0.5.29)
+**Last Updated:** 2026-01-27
 **Engine:** Godot 4.5 (GDScript)
 **Platforms:** iOS, Android
 
@@ -29,7 +29,7 @@ NODE MAP --> SETUP PHASE --> COMBAT --> REWARDS --> NODE MAP
 On Death: XP awarded --> Meta upgrades --> New Run ---+
 ```
 
-Each run progresses through a procedurally generated node map. Battles use turn-based tactical combat on a variable N×M grid (default 7×8). Between runs, XP purchases permanent upgrades.
+Each run progresses through a procedurally generated node map. Battles use turn-based tactical combat on a variable N×M grid (default 11×13 for campaign). Between runs, XP purchases permanent upgrades, and successful extraction adds components to your persistent Exodus Fleet.
 
 ---
 
@@ -41,13 +41,19 @@ Each run progresses through a procedurally generated node map. Battles use turn-
 | Carrier Types | 1 (fixed) | **4** (Scout, Standard, Battle, Tender) |
 | Meta Upgrades | 1-2 | **22** with prerequisites |
 | Combat Resolution | Simultaneous | **Sequential** (initiative-based) |
-| Grid Size | 5×7 fixed | **Variable N×M** (default 7×8) |
+| Grid Size | 5×7 fixed | **Variable N×M** (11×13 campaign) |
 | Pilot System | Post-MVP | **Fully implemented** |
 | Admiral Skills | Not planned | **6 skills** across 3 tiers |
 | Blessed Squadrons | Post-MVP | **Implemented** |
 | Sensor Tiers | Not planned | **5 tiers** (0-4) |
 | Achievements | Not planned | **6 achievements** |
 | Tutorial | Basic | **Guided demonstration** with 9 steps |
+| Directional Damage | Not planned | **5-sector damage model** |
+| Capital Collisions | Not planned | **Chain collision system** |
+| Exodus Fleet | Not planned | **Component extraction meta** |
+| Reinforcements | Not planned | **Multi-wave battles** |
+| Crafting | Not planned | **Blueprint system** |
+| Alien Factions | Not planned | **Nautolan faction** |
 
 ---
 
@@ -60,6 +66,7 @@ Each run progresses through a procedurally generated node map. Battles use turn-
 5. [[progression|Progression]] - 22 upgrades, Admiral skill tree
 6. [[achievements|Achievements]] - 6 unlockable achievements
 7. [[balance|Balance Constants]] - Extracted magic numbers
+8. [[factions|Factions]] - Human and Nautolan alien faction
 
 ---
 
