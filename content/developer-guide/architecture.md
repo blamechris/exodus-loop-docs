@@ -14,11 +14,23 @@ graph TD
     SaveManager[SaveManager<br/>Persistence]
     CombatResolver[CombatResolver<br/>Combat logic - stateless]
     DiceSystem[DiceSystem<br/>RNG and dice rolls]
+    AudioManager[AudioManager<br/>SFX and music]
+    AccessibilityManager[AccessibilityManager<br/>Colorblind, text size, etc.]
 
     GameState --> SaveManager
     GameState --> CombatResolver
     CombatResolver --> DiceSystem
 ```
+
+### Additional Singletons
+
+| Singleton | Purpose |
+|-----------|---------|
+| AudioManager | SFX pool (8 concurrent), music with fade |
+| HapticsManager | Touch feedback and vibration patterns |
+| AccessibilityManager | Colorblind mode, text scaling, screen reader |
+| StatisticsManager | Career/battle/run stat tracking |
+| AchievementManager | Achievement unlock tracking |
 
 ### GameState (game_state.gd)
 
@@ -274,3 +286,87 @@ func _clear_all_actions() -> void:
 1. Create `src/entities/name.gd`
 2. Follow existing entity patterns (id, serialization)
 3. Add to relevant roster in GameState
+
+---
+
+## Core Systems
+
+### Ship Builder V2
+
+The polyomino-based carrier construction system:
+
+| File | Purpose |
+|------|---------|
+| `src/data/carrier/carrier_class_template.gd` | Class definitions and guaranteed pieces |
+| `src/systems/ship_builder/ship_configuration_v2.gd` | Component placement and validation |
+| `src/systems/ship_builder/directional_damage.gd` | Sector-based damage calculation |
+| `src/systems/collision/capital_collision.gd` | Ship-to-ship collision handling |
+
+### Component Draw Manager
+
+Handles component pool for each run:
+
+| File | Purpose |
+|------|---------|
+| `src/systems/component_draw/component_draw_manager.gd` | Run-start component drawing |
+| `src/data/fleet/exodus_fleet.gd` | Persistent fleet extraction |
+
+### Reinforcement System
+
+Controls multi-wave encounters:
+
+| File | Purpose |
+|------|---------|
+| `src/systems/reinforcement_manager.gd` | Wave triggers and spawning |
+
+### Crafting System
+
+Blueprint-based component crafting:
+
+| File | Purpose |
+|------|---------|
+| `src/data/crafting/blueprint_registry.gd` | All available blueprints |
+| `src/systems/crafting/build_queue_manager.gd` | Build queue (max 3) |
+| `src/systems/crafting/blueprint_drop_calculator.gd` | Drop chance calculation |
+
+---
+
+## Key Data Classes
+
+### DrawnComponent
+
+Component drawn for current run:
+
+```gdscript
+class DrawnComponent:
+    var component_type: ComponentType
+    var shape: ShapeType
+    var rarity: Rarity
+    var traits: Array[String]
+    var source: String  # "guaranteed", "bonus_draw", "exodus_fleet"
+```
+
+### ExtractedComponent
+
+Component saved to Exodus Fleet:
+
+```gdscript
+class ExtractedComponent:
+    var id: String
+    var component_type: ComponentType
+    var rarity: Rarity
+    var damage_percent: float
+    var extraction_run_id: String
+```
+
+### WaveConfig
+
+Reinforcement wave configuration:
+
+```gdscript
+class WaveConfig:
+    var trigger: WaveTrigger
+    var trigger_value: int
+    var fighter_count: int
+    var spawn_position: SpawnPosition
+```

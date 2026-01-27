@@ -26,6 +26,9 @@ Welcome to the official documentation for Exodus Loop. This site contains the Ga
 
 ### Internal
 - [[internal/tech-debt|Tech Debt Tracker]] - Prioritized issues
+- [[internal/exodus-fleet|Exodus Fleet System]] - Meta-progression fleet extraction
+- [[internal/reinforcements|Reinforcement System]] - Multi-wave battle encounters
+- [[internal/crafting|Crafting System]] - Blueprint-based component crafting
 - [GitHub Repository](https://github.com/blamechris/exodus-loop)
 
 ---
@@ -38,11 +41,11 @@ You are the captain of humanity's last carrier, escorting refugee fleet survivor
 
 ## Current Version
 
-**Version:** 0.5.23
+**Version:** 0.5.29
 **Engine:** Godot 4.5 (GDScript)
 **Platforms:** iOS, Android (single codebase)
 **Resolution:** 720x1280 (9:16 portrait, mobile-first)
 
 ---
 
-*This documentation reflects the actual implementation as of version 0.5.23.*
+*This documentation reflects the actual implementation as of version 0.5.29.*
