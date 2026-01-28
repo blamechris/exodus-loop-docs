@@ -143,6 +143,43 @@ Segments fill based on: non-HOLD movements + enabled fires + launch orders.
 
 ---
 
+## Single-Occupancy Tactical Mode
+
+> **Default as of v0.5.30** - This is now the standard combat mode.
+
+The combat system uses **single-occupancy rules**, meaning:
+
+| Rule | Effect |
+|------|--------|
+| **One ship per cell** | Occupied cells block movement - ships stay in place |
+| **No MBM modal** | Dogfights resolve in tactical layer, not popup |
+| **Ammo on miss** | Ammo consumed even when firing at empty space |
+| **Weapon cooldowns** | Weapons have cooldown turns between uses |
+| **Adjacent dogfights** | Ships attack enemies in adjacent cells |
+
+### Cell Occupancy
+
+- When a ship attempts to move into an occupied cell, it **stays in place**
+- Facing is preserved (no rotation penalty)
+- Plan moves carefully to avoid traffic jams
+
+### Tactical Dogfights
+
+Instead of modal-based combat when ships share a cell:
+- Ships fire at adjacent enemies during the fire sub-phase
+- Damage is applied immediately in the tactical layer
+- No separate dogfight popup
+
+### Weapon Cooldowns
+
+Some weapons have cooldown periods:
+```
+Ion Cannon: 2-turn cooldown
+Standard Laser: No cooldown (fires every turn)
+```
+
+---
+
 ## Resolve Phase
 
 All ships execute their queued actions simultaneously across 3 sub-phases.
@@ -171,13 +208,15 @@ Ships move in order of speed (highest first):
 
 Ties broken alphabetically by ship ID for determinism.
 
-### Collision Rules
+### Movement Blocking
 
-When ships end up at the same position:
-- Larger ship wins (gets the cell)
-- Equal size: faster ship wins
-- Both ships take collision damage based on size
-- Losing ship bounces back and reverses facing
+With single-occupancy rules:
+- Ships **cannot** move into occupied cells
+- Blocked ships stay in their current position
+- Facing is preserved (no forced rotation)
+- Plan your fleet's movement to avoid congestion
+
+> **Note:** Capital ship collisions still apply when large ships attempt to occupy the same cell during simultaneous movement resolution.
 
 ### Weapons Fire
 
