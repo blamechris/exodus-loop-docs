@@ -30,6 +30,14 @@ Blueprint-based component crafting:
 
 ## Battle Systems
 
+### [[fleet-management|Fleet Management System]]
+
+Squadron location and dock/undock operations:
+- DOCKED vs ESCORTING ship locations
+- Fleet action economy (limited at combat nodes)
+- Escort fuel cost mechanics
+- Fleet Management screen with Build/Repair/Pilots/Stats tabs
+
 ### [[reinforcements|Reinforcement System]]
 
 Multi-wave encounter management:

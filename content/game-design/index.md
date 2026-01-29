@@ -4,8 +4,8 @@ title: Game Design Document v1.0
 
 # Exodus Loop - Game Design Document v1.0
 
-**Version:** 1.2 (reflects implementation as of v0.5.29)
-**Last Updated:** 2026-01-27
+**Version:** 1.3 (reflects implementation as of v0.5.30)
+**Last Updated:** 2026-01-28
 **Engine:** Godot 4.5 (GDScript)
 **Platforms:** iOS, Android
 
@@ -54,6 +54,7 @@ Each run progresses through a procedurally generated node map. Battles use turn-
 | Reinforcements | Not planned | **Multi-wave battles** |
 | Crafting | Not planned | **Blueprint system** |
 | Alien Factions | Not planned | **Nautolan faction** |
+| Fleet Management | Not planned | **Dock/Escort locations** |
 
 ---
 
