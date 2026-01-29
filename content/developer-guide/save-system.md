@@ -93,14 +93,15 @@ Exodus Loop uses JSON-based persistence with versioned schemas for forward compa
 
 ---
 
-## Run Save Schema (v6)
+## Run Save Schema (v9)
 
 ```json
 {
-  "version": 6,
+  "version": 9,
   "seed": 987654,
   "turn_number": 12,
   "current_node_id": 5,
+  "fleet_actions_remaining": 1,
   "resources": {
     "metal": 8,
     "energy": 12,
@@ -114,7 +115,7 @@ Exodus Loop uses JSON-based persistence with versioned schemas for forward compa
   },
   "squadron_roster": [
     {
-      "version": 4,
+      "version": 7,
       "id": 1,
       "type": 0,
       "callsign": "I-Alpha-1",
@@ -124,6 +125,7 @@ Exodus Loop uses JSON-based persistence with versioned schemas for forward compa
       "fuel": 3,
       "grid_pos": [2, 4],
       "state": "READY",
+      "ship_location": "DOCKED",
       "assigned_pilot_id": 5,
       "is_enemy": false,
       "is_blessed": false
@@ -284,7 +286,7 @@ func clear_run_save() -> void:
 ```gdscript
 func to_dict() -> Dictionary:
     return {
-        "version": 4,
+        "version": 7,
         "id": id,
         "type": type,
         "callsign": callsign,
@@ -296,6 +298,7 @@ func to_dict() -> Dictionary:
         "max_fuel": max_fuel,
         "grid_pos": [grid_pos.x, grid_pos.y],
         "state": State.keys()[state],
+        "ship_location": ShipLocation.keys()[ship_location],
         "assigned_pilot_id": assigned_pilot_id,
         "is_enemy": is_enemy,
         "is_blessed": is_blessed
