@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+    <channel>
+      <title>Exodus Loop Documentation</title>
+      <link>https://www.blamechris.com/exodus-loop-docs</link>
+      <description>Last 10 notes on Exodus Loop Documentation</description>
+      <generator>Quartz -- quartz.jzhao.xyz</generator>
+      <item>
+    <title>Save System</title>
+    <link>https://www.blamechris.com/exodus-loop-docs/developer-guide/save-system</link>
+    <guid>https://www.blamechris.com/exodus-loop-docs/developer-guide/save-system</guid>
+    <description><![CDATA[ Save System Exodus Loop uses JSON-based persistence with versioned schemas for forward compatibility. ]]></description>
+    <pubDate>Thu, 29 Jan 2026 06:33:15 GMT</pubDate>
+  </item><item>
+    <title>Game Design Document v1.0</title>
+    <link>https://www.blamechris.com/exodus-loop-docs/game-design/</link>
+    <guid>https://www.blamechris.com/exodus-loop-docs/game-design/</guid>
+    <description><![CDATA[ Exodus Loop - Game Design Document v1.0 Version: 1.3 (reflects implementation as of v0.5.30) Last Updated: 2026-01-28 Engine: Godot 4.5 (GDScript) Platforms: iOS, Android This GDD documents the actual implementation, not the original design vision. ]]></description>
+    <pubDate>Thu, 29 Jan 2026 06:33:15 GMT</pubDate>
+  </item><item>
+    <title>Fleet Management System</title>
+    <link>https://www.blamechris.com/exodus-loop-docs/internal/fleet-management</link>
+    <guid>https://www.blamechris.com/exodus-loop-docs/internal/fleet-management</guid>
+    <description><![CDATA[ Fleet Management System Squadron location and state management for dock/undock operations between carriers and escort duty. ]]></description>
+    <pubDate>Thu, 29 Jan 2026 06:33:15 GMT</pubDate>
+  </item><item>
+    <title>Internal Systems</title>
+    <link>https://www.blamechris.com/exodus-loop-docs/internal/</link>
+    <guid>https://www.blamechris.com/exodus-loop-docs/internal/</guid>
+    <description><![CDATA[ Internal Systems Technical documentation for internal game systems and meta-progression features. ]]></description>
+    <pubDate>Thu, 29 Jan 2026 06:33:15 GMT</pubDate>
+  </item><item>
+    <title>Combat Implementation</title>
+    <link>https://www.blamechris.com/exodus-loop-docs/developer-guide/combat-system</link>
+    <guid>https://www.blamechris.com/exodus-loop-docs/developer-guide/combat-system</guid>
+    <description><![CDATA[ Combat Implementation Technical documentation for the combat system implementation. ]]></description>
+    <pubDate>Thu, 29 Jan 2026 06:30:02 GMT</pubDate>
+  </item><item>
+    <title>Combat System</title>
+    <link>https://www.blamechris.com/exodus-loop-docs/game-design/combat</link>
+    <guid>https://www.blamechris.com/exodus-loop-docs/game-design/combat</guid>
+    <description><![CDATA[ Combat System Exodus Loop uses a Puzzle Pirates-inspired intent-based combat system with simultaneous resolution. ]]></description>
+    <pubDate>Thu, 29 Jan 2026 06:30:02 GMT</pubDate>
+  </item><item>
+    <title>Architecture</title>
+    <link>https://www.blamechris.com/exodus-loop-docs/developer-guide/architecture</link>
+    <guid>https://www.blamechris.com/exodus-loop-docs/developer-guide/architecture</guid>
+    <description><![CDATA[ Architecture Exodus Loop follows a singleton-based architecture with signal-driven communication between systems. ]]></description>
+    <pubDate>Tue, 27 Jan 2026 21:54:03 GMT</pubDate>
+  </item><item>
+    <title>Factions</title>
+    <link>https://www.blamechris.com/exodus-loop-docs/game-design/factions</link>
+    <guid>https://www.blamechris.com/exodus-loop-docs/game-design/factions</guid>
+    <description><![CDATA[ Factions Exodus Loop features two distinct factions, each with unique unit naming, visual styling, and combat traits. ]]></description>
+    <pubDate>Tue, 27 Jan 2026 21:54:03 GMT</pubDate>
+  </item><item>
+    <title>Exodus Loop Documentation</title>
+    <link>https://www.blamechris.com/exodus-loop-docs/</link>
+    <guid>https://www.blamechris.com/exodus-loop-docs/</guid>
+    <description><![CDATA[ Exodus Loop A Godot 4.5 mobile roguelike where you command a carrier fleet escaping through hostile space. ]]></description>
+    <pubDate>Tue, 27 Jan 2026 21:54:03 GMT</pubDate>
+  </item><item>
+    <title>Crafting System</title>
+    <link>https://www.blamechris.com/exodus-loop-docs/internal/crafting</link>
+    <guid>https://www.blamechris.com/exodus-loop-docs/internal/crafting</guid>
+    <description><![CDATA[ Crafting System The crafting system allows players to build new ship components using blueprints and resources collected during runs. ]]></description>
+    <pubDate>Tue, 27 Jan 2026 21:54:03 GMT</pubDate>
+  </item>
+    </channel>
+  </rss>
