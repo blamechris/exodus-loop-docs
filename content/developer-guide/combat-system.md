@@ -6,6 +6,8 @@ title: Combat Implementation
 
 Technical documentation for the combat system implementation.
 
+> **Note:** As of v0.5.30, single-occupancy tactical combat is enabled by default (`battle_state.single_occupancy_enabled = true`). This changes movement blocking, dogfight resolution, and weapon behavior. See [[../game-design/combat#single-occupancy-tactical-mode|Single-Occupancy Tactical Mode]] for gameplay details.
+
 ## File Locations
 
 | File | Purpose |
@@ -346,3 +348,68 @@ func _can_intercept(squad: Squadron) -> bool:
 - Initiative ties resolved by base SPD
 
 See [[../internal/tech-debt|Tech Debt]] for tracking this divergence.
+
+---
+
+## Single-Occupancy Mode Implementation
+
+**File:** `src/scripts/intent_battle/battle_state.gd`
+
+```gdscript
+# Feature flag (enabled by default as of v0.5.30)
+var single_occupancy_enabled: bool = true
+
+# Debug logging for combat tracing
+var debug_combat_tracing: bool = false
+```
+
+### Cell Occupancy API
+
+```gdscript
+func is_cell_occupied_by_ship(pos: Vector2i) -> bool
+    # Returns true if any living ship occupies the cell
+
+func get_ship_at_cell(pos: Vector2i) -> ShipState
+    # Returns the ship at position, or null if empty
+    # Uses O(1) cache for performance
+
+func can_enter_cell(mover_id: String, pos: Vector2i) -> bool
+    # Returns true if ship can move to cell
+    # Blocked if single_occupancy_enabled AND cell occupied by other ship
+```
+
+### Movement Blocking
+
+**File:** `src/scripts/intent_battle/turn_resolver.gd`
+
+When `single_occupancy_enabled`:
+- Blocked ships **stay in place** (no bouncing)
+- Facing is **preserved** (no forced rotation)
+- Cell occupancy cache rebuilt at turn start
+
+### MBM Disable
+
+```gdscript
+static func detect_mbm_engagements(state: BattleState) -> Array[Dictionary]:
+    if state.single_occupancy_enabled:
+        return []  # No same-cell encounters
+```
+
+### Weapon Cooldowns
+
+```gdscript
+class Weapon:
+    var cooldown_max: int = 0      # 0 = fires every turn
+    var cooldown_remaining: int = 0
+
+    func can_fire() -> bool        # Returns true if cooldown == 0
+    func fire() -> void            # Sets cooldown_remaining = cooldown_max
+    func tick_cooldown() -> void   # Called end-of-turn
+```
+
+### Tactical Dogfight Resolution
+
+Adjacent ship combat resolved in `_resolve_tactical_dogfight()`:
+- Triggered when adjacent ships both fire at each other
+- Damage applied immediately (no modal)
+- `DogfightEvent` emitted with results
